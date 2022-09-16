@@ -1,9 +1,11 @@
+use uuid::{uuid, Uuid};
 
 pub struct Player {
+    pub player_id: Uuid,
     pub display_name: String,
     pub discord_name: String,
     pub rank: Rank,
-    pub team1: Team,
+    pub team1: Option<Team>,
     pub team2: Option<Team>,
     pub team3: Option<Team>
 }
@@ -231,14 +233,20 @@ pub struct Character {
 }
 
 impl Character {
+    fn new(name: CharacterName, icon: String) -> Self {
+        Character {
+            name,
+            icon
+        }
+    }
     fn from_name(name: CharacterName) -> Self {
         use CharacterName::*;
         match name {
             Annie => Self::new(name,"https://static.wikia.nocookie.net/skullgirls/images/5/5c/Icon-Annie.png/revision/latest/scale-to-width-down/30?cb=20210308142433".to_string()),
             Beowulf => Self::new(name,"https://static.wikia.nocookie.net/skullgirls/images/b/b4/Icon-Beowulf.png/revision/latest/scale-to-width-down/100?cb=20150418150623".to_string()),
-            BigBand => Self::new(name,"https://static.wikia.nocookie.net/skullgirls/images/3/37/Icon-Big_Band.png/revision/latest/scale-to-width-down/100?cb=20150418152045".to_string()),
-            BlackDhalia => Self::new(name,"".to_string()),
-            Cerrabella => Self::new(name,"https://static.wikia.nocookie.net/skullgirls/images/9/90/Icon-Cerebella.png/revision/latest/scale-to-width-down/100?cb=20150418151607".to_string()),
+            BigBand => Self::new(name, "https://static.wikia.nocookie.net/skullgirls/images/3/37/Icon-Big_Band.png/revision/latest/scale-to-width-down/100?cb=20150418152045".to_string()),
+            BlackDhalia => Self::new(name, "".to_string()),
+            Cerabella => Self::new(name,"https://static.wikia.nocookie.net/skullgirls/images/9/90/Icon-Cerebella.png/revision/latest/scale-to-width-down/100?cb=20150418151607".to_string()),
             Double => Self::new(name,"https://static.wikia.nocookie.net/skullgirls/images/a/a5/Icon-Double.png/revision/latest/scale-to-width-down/100?cb=20150418151949".to_string()),
             Eliza => Self::new(name,"https://static.wikia.nocookie.net/skullgirls/images/b/b6/Icon-Eliza.png/revision/latest/scale-to-width-down/100?cb=20150418152202".to_string()),
             Fillia => Self::new(name,"https://static.wikia.nocookie.net/skullgirls/images/1/1d/Icon-Filia.png/revision/latest/scale-to-width-down/40?cb=20150418151218".to_string()),
@@ -246,21 +254,15 @@ impl Character {
             Marie => Self::new(name,"".to_string()),
             MsFortune => Self::new(name,"https://static.wikia.nocookie.net/skullgirls/images/6/62/Icon-Ms._Fortune.png/revision/latest/scale-to-width-down/100?cb=20150418151755".to_string()),
             Painwheel => Self::new(name,"https://static.wikia.nocookie.net/skullgirls/images/a/ab/Icon-Painwheel.png/revision/latest/scale-to-width-down/100?cb=20150418151910".to_string()),
-            Parasould => Self::new(name,"https://static.wikia.nocookie.net/skullgirls/images/c/c8/Icon-Parasoul.png/revision/latest/scale-to-width-down/100?cb=20150418151839".to_string()),
+            Parasoul => Self::new(name,"https://static.wikia.nocookie.net/skullgirls/images/c/c8/Icon-Parasoul.png/revision/latest/scale-to-width-down/100?cb=20150418151839".to_string()),
             Peacock => Self::new(name,"https://static.wikia.nocookie.net/skullgirls/images/a/ac/Icon-Peacock.png/revision/latest/scale-to-width-down/100?cb=20150418151750".to_string()),
             RoboFortune => Self::new(name,"https://static.wikia.nocookie.net/skullgirls/images/a/a3/Icon-Robo-Fortune.png/revision/latest/scale-to-width-down/100?cb=20150423041704".to_string()),
             Squiggly => Self::new(name,"https://static.wikia.nocookie.net/skullgirls/images/2/24/Icon-Squigly.png/revision/latest/scale-to-width-down/100?cb=20150418152035".to_string()),
             Umbrella => Self::new(name,"https://wiki.gbl.gg/images/0/08/SG_umb_icon.png".to_string()),
-            Valentine => Self::new(name,"https://static.wikia.nocookie.net/skullgirls/images/1/13/Icon-Valentine.png/revision/latest/scale-to-width-down/100?cb=20150418151931".to_string())
+            Valentine => Self::new(name,"https://static.wikia.nocookie.net/skullgirls/images/1/13/Icon-Valentine.png/revision/latest/scale-to-width-down/100?cb=20150418151931".to_string()),
         }
     }
 
-    fn new(name: CharacterName, icon: String) -> Self {
-        Character {
-            name,
-            icon
-        }
-    }
 }
 
 pub enum CharacterName {
@@ -268,7 +270,7 @@ pub enum CharacterName {
     Beowulf,
     BigBand,
     BlackDhalia,
-    Cerrabella,
+    Cerabella,
     Double,
     Eliza,
     Fillia,
@@ -276,7 +278,7 @@ pub enum CharacterName {
     Marie,
     MsFortune,
     Painwheel,
-    Parasould,
+    Parasoul,
     Peacock,
     RoboFortune,
     Squiggly,
