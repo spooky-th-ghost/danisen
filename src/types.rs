@@ -1,5 +1,16 @@
 use uuid::{uuid, Uuid};
 
+pub struct User {
+    user_id: Uuid,
+    player_id: Uuid,
+}
+
+pub enum Role {
+    User,
+    Moderator,
+    Admin,
+}
+
 pub struct Player {
     pub player_id: Uuid,
     pub display_name: String,
@@ -7,11 +18,11 @@ pub struct Player {
     pub rank: Rank,
     pub team1: Option<Team>,
     pub team2: Option<Team>,
-    pub team3: Option<Team>
+    pub team3: Option<Team>,
 }
 
 impl Player {
-    pub fn can_play(&self, other: Player) -> bool{
+    pub fn can_play(&self, other: Player) -> bool {
         self.rank.can_play(other.rank)
     }
 }
@@ -23,12 +34,8 @@ pub struct Rank {
 
 impl Rank {
     pub fn from_rankname(name: RankName) -> Self {
-        Rank {
-            name,
-            points: 0
-        }
+        Rank { name, points: 0 }
     }
-
 
     pub fn update(&mut self, match_result: MatchResult) {
         let points = match match_result {
@@ -47,7 +54,7 @@ impl Rank {
                 } else {
                     self.points = points;
                 }
-            },
+            }
             Dan2 => {
                 if points > 2 {
                     self.name = Dan3;
@@ -58,7 +65,7 @@ impl Rank {
                 } else {
                     self.points = points;
                 }
-            },
+            }
             Dan3 => {
                 if points > 2 {
                     self.name = Dan4;
@@ -69,7 +76,7 @@ impl Rank {
                 } else {
                     self.points = points;
                 }
-            },
+            }
             Dan4 => {
                 if points > 2 {
                     self.name = Dan5;
@@ -80,7 +87,7 @@ impl Rank {
                 } else {
                     self.points = points;
                 }
-            },
+            }
             Dan5 => {
                 if points > 2 {
                     self.name = Dan6;
@@ -91,7 +98,7 @@ impl Rank {
                 } else {
                     self.points = points;
                 }
-            },
+            }
             Dan6 => {
                 if points > 2 {
                     self.name = Dan7;
@@ -102,7 +109,7 @@ impl Rank {
                 } else {
                     self.points = points;
                 }
-            },
+            }
             Dan7 => {
                 if points > 2 {
                     self.name = Strong;
@@ -113,7 +120,7 @@ impl Rank {
                 } else {
                     self.points = points;
                 }
-            },
+            }
             Strong => {
                 if points > 4 {
                     self.name = Valor;
@@ -124,7 +131,7 @@ impl Rank {
                 } else {
                     self.points = points;
                 }
-            },
+            }
             Valor => {
                 if points > 4 {
                     self.name = Royal;
@@ -135,7 +142,7 @@ impl Rank {
                 } else {
                     self.points = points;
                 }
-            },
+            }
             Royal => {
                 if points > 4 {
                     self.name = Emperor;
@@ -146,7 +153,7 @@ impl Rank {
                 } else {
                     self.points = points;
                 }
-            },
+            }
             Emperor => {
                 if points > 4 {
                     self.name = Lord;
@@ -157,7 +164,7 @@ impl Rank {
                 } else {
                     self.points = points;
                 }
-            },
+            }
             Lord => {
                 if points > 4 {
                     self.points = 5;
@@ -167,7 +174,7 @@ impl Rank {
                 } else {
                     self.points = points;
                 }
-            },
+            }
         }
     }
 
@@ -176,15 +183,15 @@ impl Rank {
         match &self.name {
             Dan1 => matches!(other.name, Dan1 | Dan2),
             Dan2 => matches!(other.name, Dan1 | Dan2 | Dan3),
-            Dan3 => matches!(other.name,  Dan2 | Dan3 | Dan4),
-            Dan4 => matches!(other.name,  Dan3 | Dan4 | Dan5),
-            Dan5 => matches!(other.name,  Dan4 | Dan5 | Dan6),
-            Dan6 => matches!(other.name,  Dan5 | Dan6 | Dan7),
-            Dan7 => matches!(other.name,  Dan6 | Dan7 | Strong),
-            Strong => matches!(other.name,  Dan7 | Strong | Valor),
-            Valor => matches!(other.name,  Strong | Valor | Royal),
-            Royal => matches!(other.name,  Valor | Royal | Emperor),
-            Emperor => matches!(other.name,  Royal | Emperor | Lord),
+            Dan3 => matches!(other.name, Dan2 | Dan3 | Dan4),
+            Dan4 => matches!(other.name, Dan3 | Dan4 | Dan5),
+            Dan5 => matches!(other.name, Dan4 | Dan5 | Dan6),
+            Dan6 => matches!(other.name, Dan5 | Dan6 | Dan7),
+            Dan7 => matches!(other.name, Dan6 | Dan7 | Strong),
+            Strong => matches!(other.name, Dan7 | Strong | Valor),
+            Valor => matches!(other.name, Strong | Valor | Royal),
+            Royal => matches!(other.name, Valor | Royal | Emperor),
+            Emperor => matches!(other.name, Royal | Emperor | Lord),
             Lord => matches!(other.name, Emperor | Lord),
         }
     }
@@ -194,15 +201,23 @@ impl Default for Rank {
     fn default() -> Self {
         Rank {
             name: RankName::Dan1,
-            points: 0
+            points: 0,
         }
     }
+}
+
+pub struct PostMatch {
+    pub player_1_id: Uuid,
+    pub player_1_team: Team,
+    pub player_2_id: Uuid,
+    pub player_2_team: Team,
+    pub winner: Uuid,
 }
 
 #[derive(Clone, Copy)]
 pub enum MatchResult {
     Win,
-    Lose
+    Lose,
 }
 
 #[derive(PartialEq, Copy, Clone)]
@@ -218,26 +233,23 @@ pub enum RankName {
     Valor,
     Royal,
     Emperor,
-    Lord
+    Lord,
 }
 
 pub struct Team {
     pub point: Character,
     pub mid: Option<Character>,
-    pub anchor: Option<Character>
+    pub anchor: Option<Character>,
 }
 
 pub struct Character {
-   pub name: CharacterName,
-   pub icon: String,
+    pub name: CharacterName,
+    pub icon: String,
 }
 
 impl Character {
     fn new(name: CharacterName, icon: String) -> Self {
-        Character {
-            name,
-            icon
-        }
+        Character { name, icon }
     }
     fn from_name(name: CharacterName) -> Self {
         use CharacterName::*;
@@ -262,7 +274,6 @@ impl Character {
             Valentine => Self::new(name,"https://static.wikia.nocookie.net/skullgirls/images/1/13/Icon-Valentine.png/revision/latest/scale-to-width-down/100?cb=20150418151931".to_string()),
         }
     }
-
 }
 
 pub enum CharacterName {
@@ -283,5 +294,5 @@ pub enum CharacterName {
     RoboFortune,
     Squiggly,
     Umbrella,
-    Valentine
+    Valentine,
 }

@@ -8,5 +8,7 @@ edition = "2021"
 [dependencies]
 axum = "0.5.15"
 uuid = {version = "1.1.2", features = ["v4", "fast-rng", "macro-diagnostics"]}
-quaint = {version = "0.1.13", features = ["pooled", "sqlite"]}
-tokio = {version = "1.0", features = ["full"] }
+quaint = {version = "0.1.13", features = ["full-postgresql"]}
+tokio = {version = "1.0", features = ["full"]}
+refinery = { version = "0.8", features = ["tokio-postgres"]}
+dotenv = "0.15.0"
